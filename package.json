@@ -1,0 +1,53 @@
+{
+    "name": "twitch-code-reviewers",
+    "displayName": "Twitch Code Revieweers",
+    "description": "Let your twitch followers on the chat make suggestions on your code during your coding stream ",
+    "version": "0.0.1",
+    "publisher": "warguns",
+    "engines": {
+        "vscode": "^1.26.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./out/extension",
+    "contributes": {
+        "commands": [
+            {
+                "title": "Enable TwitchCodeReviewers",
+                "command": "twitch-code-reviewers.enableCodeReviews",
+                "category": "Twitch CodeReviewers"
+            },
+            {
+                "title": "Disable TwitchCodeReviewers",
+                "command": "twitch-code-reviewers.disableCodeReviews",
+                "category": "Twitch CodeReviewers"
+            }
+        ],
+        "configuration": {
+            "properties": {
+                "twitch-code-reviewers.enableCodeReviews": {
+                    "type": "boolean",
+                    "default": true
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "lint": "eslint . --ext .ts,.tsx",
+        "watch": "tsc -watch -p ./"
+    },
+    "devDependencies": {
+        "@types/node": "^12.12.0",
+        "@typescript-eslint/eslint-plugin": "^3.0.2",
+        "@typescript-eslint/parser": "^3.0.2",
+        "@types/vscode": "^1.26.0",
+        "eslint": "^7.1.0",
+        "typescript": "3.8.3"
+    }
+}
