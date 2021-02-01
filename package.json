@@ -32,6 +32,10 @@
                 "twitch-code-reviewers.enableCodeReviews": {
                     "type": "boolean",
                     "default": true
+                },
+                "twitch-code-reviewers.socketConnection": {
+                    "type": "string",
+                    "default": "http://localhost:666"
                 }
             }
         }
@@ -49,5 +53,8 @@
         "@types/vscode": "^1.26.0",
         "eslint": "^7.1.0",
         "typescript": "3.8.3"
+    },
+    "dependencies": {
+        "socket.io-client": "^3.1.0"
     }
 }

@@ -2,6 +2,10 @@
 
 Make your twitch followers add reviews on your code during your code Stream, the plan is use Socket.io to connect it
 
+# How to make it work:
+
+1. Run a local socket.io server (default port 666)
+2. emit using the format: `socket.broadcast.emit('twitch-code-review', user, line, message);`
 
 ## Debugging the Extension
 

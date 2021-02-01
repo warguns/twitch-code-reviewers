@@ -1,39 +1,41 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+const socket_io_client_1 = require("socket.io-client");
 /**
  * TwitchCodeReviewersProvider
  */
 class TwitchCodeReviewersProvider {
     constructor() {
         this.codeLenses = [];
+        this.commentedLines = [];
         this._onDidChangeCodeLenses = new vscode.EventEmitter();
         this.onDidChangeCodeLenses = this._onDidChangeCodeLenses.event;
-        this.regex = /LOL/g;
+        this.socket = socket_io_client_1.io(vscode.workspace.getConfiguration("twitch-code-reviewers").get("socketConnection", "http://localhost:666/"));
         vscode.workspace.onDidChangeConfiguration((_) => {
             this._onDidChangeCodeLenses.fire();
         });
     }
     provideCodeLenses(document, token) {
         if (vscode.workspace.getConfiguration("twitch-code-reviewers").get("enableCodeReviews", true)) {
-            this.codeLenses = [];
-            const regex = new RegExp(this.regex);
-            const text = document.getText();
-            let matches;
-            while ((matches = regex.exec(text)) !== null) {
-                const line = document.lineAt(document.positionAt(matches.index).line);
-                const indexOf = line.text.indexOf(matches[0]);
-                const position = new vscode.Position(line.lineNumber, indexOf);
-                const range = document.getWordRangeAtPosition(position, new RegExp(this.regex));
+            this.socket.once("twitch-code-review", (user, messageLine, messageContent) => {
+                const line = document.lineAt(document.positionAt(messageLine).line);
+                // const position = new vscode.Position(line.lineNumber, 0);
+                const range = new vscode.Range(line.lineNumber, 0, line.lineNumber, 100);
                 if (range) {
-                    this.codeLenses.push(new vscode.CodeLens(range, {
-                        title: "This is the command we put from socket io",
-                        tooltip: "Tooltip provided by sample extension",
-                        command: "twitch-code-reviewers.codelensAction",
-                        arguments: ["Argument 1", false]
-                    }));
+                    const keyPair = `${messageLine}-${messageContent}`;
+                    if (!this.commentedLines.includes(keyPair)) {
+                        this.commentedLines.push(keyPair);
+                        this.codeLenses.push(new vscode.CodeLens(range, {
+                            title: `${user}: ${messageContent}`,
+                            tooltip: messageContent,
+                            command: "twitch-code-reviewers.codelensAction",
+                            arguments: ["Argument 1", false]
+                        }));
+                    }
                 }
-            }
+            });
+            console.log(this.codeLenses);
             return this.codeLenses;
         }
         return [];
