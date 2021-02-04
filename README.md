@@ -2,6 +2,9 @@
 
 Make your twitch followers add reviews on your code during your code Stream, the plan is use Socket.io to connect it
 
+
+![example](example.png "Example")
+
 # How to make it work:
 
 1. Run a local socket.io server (default port 666)
